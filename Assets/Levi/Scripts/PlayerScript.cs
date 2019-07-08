@@ -6,9 +6,11 @@ public class PlayerScript : MonoBehaviour
 {
     public float speed;
     Vector3 currentPosition;
+    Rigidbody rb;
 
     private void Start()
     {
+        rb = GetComponent<Rigidbody>();
         currentPosition = transform.position;
     }
 
@@ -16,12 +18,22 @@ public class PlayerScript : MonoBehaviour
     {
         if(Input.GetKey(KeyCode.A))
         {
-            currentPosition.x -= Time.deltaTime * speed;
+            rb.velocity -= new Vector3(Time.deltaTime * speed,0,0);
             transform.position = currentPosition;          
         }
         if(Input.GetKey(KeyCode.D))
         {
-            currentPosition.x += Time.deltaTime * speed;
+            rb.velocity -= new Vector3(Time.deltaTime * speed, 0, 0);
+            transform.position = currentPosition;
+        }
+        if (Input.GetKey(KeyCode.W))
+        {
+            rb.velocity -= new Vector3(0, 0, Time.deltaTime * speed);
+            transform.position = currentPosition;
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            rb.velocity -= new Vector3(0, 0, Time.deltaTime * speed);
             transform.position = currentPosition;
         }
     }
