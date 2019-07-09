@@ -19,7 +19,7 @@ public class playerInteract : MonoBehaviour {
             foreach (Collider2D c in col)
             {
                 //Debug.Log("Collided with: " + c.collider2D.gameObject.name);
-                targetPos = c.collider2D.gameObject.transform.position;
+                targetPos = c.GetComponent<Collider2D>().gameObject.transform.position;
             }
         }
     }
