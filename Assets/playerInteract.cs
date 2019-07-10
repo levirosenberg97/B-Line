@@ -5,36 +5,72 @@ using UnityEngine;
 public class playerInteract : MonoBehaviour
 {
     public Color defaultOutline, newOutline;
-    public float speed = 1, offset;
 
     private Renderer _renderer;
     private MaterialPropertyBlock propBlock;
+
+    public List<Dialogue> dialogue;
 
     private void Awake()
     {
         propBlock = new MaterialPropertyBlock();
         _renderer = GetComponent<Renderer>();
 
-        //propBlock.SetColor("_Color", Color.black);
+        _renderer.GetPropertyBlock(propBlock);
+
+        propBlock.SetColor("_Color", defaultOutline);
+       
+        _renderer.SetPropertyBlock(propBlock);
     }
 
-    private void Update()
+    void TriggerDialogue(string reason)
     {
-            _renderer.GetPropertyBlock(propBlock);
-
-            propBlock.SetColor("_Color", Color.Lerp(defaultOutline, newOutline, (Mathf.Sin(Time.time * speed + offset) + 1) / 2f));
-
-            _renderer.SetPropertyBlock(propBlock);
-        
+        GetComponent<DialogueManager>().StartDialogue(dialogue, reason);
     }
-
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.tag == "Player")
         {
-            Debug.Log("Hit");
-           
+            StartCoroutine(ChangeOutline(newOutline, propBlock.GetColor("_Color")));          
         }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.tag == "Player")
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Debug.Log(gameObject.name);
+            }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag == "Player")
+        {
+            StopAllCoroutines();
+            StartCoroutine(ChangeOutline(defaultOutline, propBlock.GetColor("_Color")));
+        }
+    }
+
+    IEnumerator ChangeOutline(Color newColor, Color startColor)
+    {
+        float increment = 0;
+        while (propBlock.GetColor("_Color") != newColor)
+        {
+            _renderer.GetPropertyBlock(propBlock);
+
+            propBlock.SetColor("_Color", Color.Lerp(startColor, newColor, increment));
+
+            increment += .1f;
+
+            _renderer.SetPropertyBlock(propBlock);
+
+            yield return new WaitForFixedUpdate();
+        }
+        yield return null;
     }
 }
