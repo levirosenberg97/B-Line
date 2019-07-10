@@ -1180,7 +1180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   viewRadius: 1
-  viewAngle: 96
+  viewAngle: 85
   gizmoRotation: {x: 0, y: 0, z: 1}
 --- !u!1 &819267558
 GameObject:
