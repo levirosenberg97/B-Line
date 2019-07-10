@@ -16,5 +16,11 @@ public class FieldOfViewEditor : Editor {
 
         Handles.DrawLine(fov.transform.position, fov.transform.position + viewAngleA * fov.viewRadius);
         Handles.DrawLine(fov.transform.position, fov.transform.position + viewAngleB * fov.viewRadius);
+
+        Handles.color = Color.blue;
+        foreach(Transform visableTarget in fov.visableTargets)
+        {
+            Handles.DrawLine(fov.transform.position, visableTarget.position);
+        }
     }
 }
