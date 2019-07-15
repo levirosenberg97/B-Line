@@ -32,6 +32,11 @@ public class FieldOfView : MonoBehaviour {
         }
     }
 
+    private void Update()
+    {
+        DrawFieldOfView();
+    }
+
 
     void findVisableTargets()
     {
@@ -63,11 +68,32 @@ public class FieldOfView : MonoBehaviour {
     {
         int stepCount = Mathf.RoundToInt(viewAngle * meshResolution);
         float stepAngleSize = viewAngle / stepCount;
+        List<Vector2> viewPoints = new List<Vector2>();
 
         for(int i = 0; i <= stepCount; i++)
         {
             float angle = transform.eulerAngles.y - viewAngle / 2 + stepAngleSize * i;
-            Debug.DrawLine(transform.position, transform.position + DirFromAngle ( ))
+            ViewCastInfo newViewCast = viewCast(angle);
+            viewPoints.Add(newViewCast.point);
+        }
+
+        int vertexCount = viewPoints.Count + 1;
+        Vector2[] vertices = new Vector2[vertexCount];
+
+    }
+
+    ViewCastInfo viewCast(float globalAngle)
+    {
+        Vector2 dir = DirFromAngle(globalAngle, true);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, viewRadius, obstacleMask);
+
+        if (hit != null)
+        {
+            return new ViewCastInfo(true, hit.point, hit.distance, globalAngle);
+        }
+        else
+        {
+            return new ViewCastInfo(false, (Vector2)transform.position + dir * viewRadius, viewRadius, globalAngle);
         }
     }
 
@@ -79,5 +105,21 @@ public class FieldOfView : MonoBehaviour {
         }
 
         return new Vector2(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
+    }
+
+    public struct ViewCastInfo
+    {
+        public bool hit;
+        public Vector2 point;
+        public float dst;
+        public float angle;
+
+        public ViewCastInfo(bool _hit, Vector2 _point, float _dst, float _angle)
+            {
+            hit = _hit;
+            point = _point;
+            dst = _dst;
+            angle = _angle;
+            }
     }
 }
