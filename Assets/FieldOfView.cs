@@ -18,8 +18,15 @@ public class FieldOfView : MonoBehaviour {
 
     public float meshResolution;
 
+    public MeshFilter viewMeshFilter;
+    Mesh viewMesh;
+
     private void Start()
     {
+        viewMesh = new Mesh();
+        viewMesh.name = "View Mesh";
+        viewMeshFilter.mesh = viewMesh;
+
         StartCoroutine("findTargetsWithDelay", .2f);
     }
 
@@ -79,6 +86,19 @@ public class FieldOfView : MonoBehaviour {
 
         int vertexCount = viewPoints.Count + 1;
         Vector2[] vertices = new Vector2[vertexCount];
+        int[] triangles = new int[(vertexCount - 2) * 3];
+
+        vertices[0] = Vector2.zero;
+        for (int i = 0; i < vertexCount - 1; i++)
+        {
+            vertices[i + 1] = viewPoints[i];
+            if(i < vertexCount - 2)
+            {
+                triangles[i * 3] = 0;
+                triangles[i * 3 + 1] = i + 1;
+                triangles[i * 3 + 2] = i + 2;
+            }
+        }
 
     }
 
