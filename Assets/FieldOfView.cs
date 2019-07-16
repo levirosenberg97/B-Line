@@ -39,7 +39,7 @@ public class FieldOfView : MonoBehaviour {
         }
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         DrawFieldOfView();
     }
@@ -75,7 +75,7 @@ public class FieldOfView : MonoBehaviour {
     {
         int stepCount = Mathf.RoundToInt(viewAngle * meshResolution);
         float stepAngleSize = viewAngle / stepCount;
-        List<Vector2> viewPoints = new List<Vector2>();
+        List<Vector3> viewPoints = new List<Vector3>();
 
         for(int i = 0; i <= stepCount; i++)
         {
@@ -85,13 +85,13 @@ public class FieldOfView : MonoBehaviour {
         }
 
         int vertexCount = viewPoints.Count + 1;
-        Vector2[] vertices = new Vector2[vertexCount];
+        Vector3[] vertices = new Vector3[vertexCount];
         int[] triangles = new int[(vertexCount - 2) * 3];
 
-        vertices[0] = Vector2.zero;
+        vertices[0] = Vector3.zero;
         for (int i = 0; i < vertexCount - 1; i++)
         {
-            vertices[i + 1] = viewPoints[i];
+            vertices[i + 1] = transform.InverseTransformPoint(viewPoints[i]);
             if(i < vertexCount - 2)
             {
                 triangles[i * 3] = 0;
@@ -100,6 +100,10 @@ public class FieldOfView : MonoBehaviour {
             }
         }
 
+        viewMesh.Clear();
+        viewMesh.vertices = vertices;
+        viewMesh.triangles = triangles;
+        viewMesh.RecalculateNormals();
     }
 
     ViewCastInfo viewCast(float globalAngle)
