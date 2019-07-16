@@ -9,7 +9,13 @@ public class playerInteract : MonoBehaviour
     private Renderer _renderer;
     private MaterialPropertyBlock propBlock;
 
+    public float radius;
+
+    float dis;
+    public Transform player;
+
     public List<Dialogue> dialogue;
+    bool clickable;
 
     private void Awake()
     {
@@ -23,38 +29,48 @@ public class playerInteract : MonoBehaviour
         _renderer.SetPropertyBlock(propBlock);
     }
 
-    void TriggerDialogue(string reason)
+    float Distance(Vector2 firstPos, Vector2 secPos)
     {
-        GetComponent<DialogueManager>().StartDialogue(dialogue, reason);
+        return dis = Mathf.Sqrt(((secPos.x - firstPos.x) * (secPos.x - firstPos.x)) + ((secPos.y - firstPos.y) * (secPos.y - firstPos.y)));
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnMouseDown()
     {
-        if(collision.tag == "Player")
+        if (clickable == true)
         {
-            StartCoroutine(ChangeOutline(newOutline, propBlock.GetColor("_Color")));          
+            TriggerDialogue("Greeting");
         }
+    }
+
+    void TriggerDialogue(string reason)
+    {
+        FindObjectOfType<DialogueManager>().StartDialogue(dialogue, reason);
     }
 
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.tag == "Player")
         {
-            if (Input.GetMouseButtonDown(0))
+            Distance(player.position, transform.position);
+            if (dis <= radius)
             {
-                Debug.Log(gameObject.name);
+                StartCoroutine(ChangeOutline(newOutline, propBlock.GetColor("_Color")));
+                clickable = true;
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    TriggerDialogue("Greeting");
+                }
+                //Debug.Log(dis);
+            }
+            else
+            {
+                StopAllCoroutines();
+                StartCoroutine(ChangeOutline(defaultOutline, propBlock.GetColor("_Color")));
+                clickable = false;
+                //Debug.Log(dis);
             }
         }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.tag == "Player")
-        {
-            StopAllCoroutines();
-            StartCoroutine(ChangeOutline(defaultOutline, propBlock.GetColor("_Color")));
-        }
-    }
+    }   
 
     IEnumerator ChangeOutline(Color newColor, Color startColor)
     {
