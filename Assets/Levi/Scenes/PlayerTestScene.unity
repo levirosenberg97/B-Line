@@ -206,15 +206,14 @@ MonoBehaviour:
   radius: 1
   player: {fileID: 928392750}
   dialogue:
-  - dialogueBoxes:
-    - reason: 
-      charPortait: {fileID: 0}
-      names: []
-      sentences: []
-    - reason: 
-      charPortait: {fileID: 0}
-      names: []
-      sentences: []
+  - reason: Greeting
+    dialogueBoxes:
+    - charPortait: {fileID: 0}
+      name: Greg
+      sentence: Hi! I'm Greg
+    - charPortait: {fileID: 0}
+      name: James
+      sentence: Hi Greg!!  I'm James
 --- !u!58 &122553969
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -460,7 +459,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 719774901}
         m_MethodName: DisplayNextSentence
         m_Mode: 1
         m_Arguments:

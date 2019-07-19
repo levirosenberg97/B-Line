@@ -6,22 +6,17 @@ using UnityEngine.UI;
 [System.Serializable]
 public struct DialogueBox
 {
-    public string reason;
-
     //public bool seen;
     public Image charPortait;
-    public string[] names;
+    public string name;
     [TextArea(3, 10)]
-    public string[] sentences;
+    public string sentence;
 }
 
 
 [System.Serializable]
 public class Dialogue
 {
-
-
+    public string reason;
     public DialogueBox[] dialogueBoxes;
-
-
 }
